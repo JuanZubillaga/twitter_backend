@@ -9,7 +9,7 @@ async function authController(req, res) {
   if (!user) return res.send("Credenciales erróneas");
   const passwordIsCorrect = await bcrypt.compare(req.body.password, user.password);
   if (!passwordIsCorrect) return res.send("Credenciales erróneas");
-  // console.log(user);
+
   const userData = {
     _id: user._id,
     fullname: user.firstname + " " + user.lastname,
@@ -21,6 +21,7 @@ async function authController(req, res) {
     following: user.following,
     followers: user.followers,
   };
+
   const token = jwt.sign(userData, process.env.ACCESS_TOKEN_SECRET);
   res.json({ token });
 }

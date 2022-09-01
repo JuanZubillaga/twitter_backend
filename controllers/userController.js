@@ -7,7 +7,7 @@ async function showHome(req, res) {
   const loggedUser = req.auth;
   // console.log(req.auth);
   const wantedTweets = await Tweet.find({ user: { $in: loggedUser.following } })
-    .populate({ path: "user" })
+    .populate({ path: "user", select: "username avatar" })
     .sort({ createdAt: "desc" })
     .limit(20);
   const ownTweets = await Tweet.find({ user: loggedUser._id }).sort({ createdAt: "desc" }).limit(5);
@@ -19,8 +19,10 @@ async function showHome(req, res) {
   }
   const recommendedUsers = await User.find({
     $and: [{ _id: { $nin: loggedUser.following } }, { _id: { $ne: loggedUser._id } }],
-  }).limit(20);
-  // res.send("hmmm");
+  })
+    .select("username avatar")
+    .limit(20);
+
   res.json({ loggedUser, wantedTweets, recommendedUsers, ownTweets });
   // res.render("home", { loggedUser, wantedTweets, recommendedUsers, ownTweets });
 }
