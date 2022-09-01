@@ -13,8 +13,8 @@ module.exports = async () => {
   for (let i = 0; i < 20; i++) {
     const firstname = faker.name.firstName();
     const lastname = faker.name.lastName();
-    const username = toLower(firstname + "." + lastname);
-    const email = username + "@gmail.com";
+    const username = faker.internet.userName(firstname, lastname);
+    const email = faker.internet.email(firstname, lastname);
     const user = new User({
       firstname: firstname,
       lastname: lastname,
