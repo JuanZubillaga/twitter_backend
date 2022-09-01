@@ -2,6 +2,7 @@ const { faker } = require("@faker-js/faker");
 const _ = require("lodash");
 const bcrypt = require("bcryptjs");
 const { User, Tweet } = require("../models");
+const { toLower } = require("lodash");
 
 faker.locale = "es";
 
@@ -10,14 +11,18 @@ module.exports = async () => {
   const tweets = [];
 
   for (let i = 0; i < 20; i++) {
+    const firstname = faker.name.firstName();
+    const lastname = faker.name.lastName();
+    const username = toLower(firstname + "." + lastname);
+    const email = username + "@gmail.com";
     const user = new User({
-      firstname: faker.name.firstName(),
-      lastname: faker.name.lastName(),
-      username: faker.internet.userName(), //estaría bueno que se correspondiera con el firstname, lastname
-      email: faker.internet.email(),
+      firstname: firstname,
+      lastname: lastname,
+      username: username,
+      email: email,
       password: await bcrypt.hash("1234", 8), //idealmente en el modelo, un hook
       bio: faker.lorem.paragraphs(),
-      avatar: "default.png",
+      avatar: faker.image.avatar(),
     });
     users.push(user);
   }
