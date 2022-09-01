@@ -1,4 +1,5 @@
 require("dotenv").config();
+const cors = require("cors");
 
 const passportConfig = require("./config/passport");
 const express = require("express");
@@ -9,6 +10,7 @@ const app = express();
 const { flash } = require("express-flash-message");
 const methodOverride = require("method-override");
 
+app.use(cors());
 app.use(express.static("public"));
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
