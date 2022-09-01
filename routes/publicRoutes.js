@@ -5,7 +5,7 @@ const publicController = require("../controllers/publicController");
 
 publicRouter.get("/", publicController.welcome);
 publicRouter.get("/login", publicController.showLogin);
-publicRouter.post("/login", authController.login);
+publicRouter.post("/login", authController);
 publicRouter.get("/registro", publicController.create);
 publicRouter.post("/register", publicController.store);
 publicRouter.get("/test", publicController.test);
