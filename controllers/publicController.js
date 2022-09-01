@@ -34,13 +34,11 @@ async function store(req, res) {
       try {
         await newUser.save();
       } catch {
-        await req.flash("info", "**Faltan campos por rellenar**");
-        return res.redirect("/registro");
+        return res.json("missing fields");
       }
-      return res.redirect("/home");
+      return res.json("success");
     } else {
-      await req.flash("info", "**El nombre de usuario/email ya está en uso**");
-      res.redirect("/registro");
+      res.json("credentials already in use");
     }
   });
 }

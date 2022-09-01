@@ -55,9 +55,10 @@ async function follow(req, res) {
   const wantedUser = await User.findOne({ username: req.params.username });
   const loggedUser = req.auth;
   const notFollowing = !loggedUser.following.includes(wantedUser.id);
-  const notSelf = !wantedUser.id.equals(loggedUser.id);
+  const notSelf = wantedUser.id !== loggedUser.id;
   if (notFollowing && notSelf) {
-    await loggedUser.updateOne({ $push: { following: wantedUser.id } });
+    await User.findByIdAndUpdate(loggedUser.id, { $push: { following: wantedUser.id } });
+    // await loggedUser.updateOne({ $push: { following: wantedUser.id } });
     await wantedUser.updateOne({ $push: { followers: loggedUser.id } });
   }
   res.json("following!");
