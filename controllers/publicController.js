@@ -1,4 +1,5 @@
 const { User } = require("../models");
+// const { Tweet } = require("../models");
 const formidable = require("formidable");
 const bcrypt = require("bcryptjs");
 
@@ -55,9 +56,15 @@ async function store(req, res) {
   });
 }
 
+async function test(req, res) {
+  const tweets = { hola: "hola", mundo: "mundo" };
+  res.json(tweets);
+}
+
 module.exports = {
   welcome,
   showLogin,
   create,
   store,
+  test,
 };
