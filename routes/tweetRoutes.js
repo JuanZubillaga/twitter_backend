@@ -5,8 +5,8 @@ const tweetController = require("../controllers/tweetController");
 
 tweetRouter.use(expressjwt({ secret: process.env.ACCESS_TOKEN_SECRET, algorithms: ["HS256"] }));
 
-tweetRouter.post("/tweet", tweetController.store);
-tweetRouter.patch("/tweet/:id", tweetController.update);
-tweetRouter.delete("/tweet/:id", tweetController.destroy);
+tweetRouter.post("/", tweetController.store);
+tweetRouter.patch("/:id", tweetController.update);
+tweetRouter.delete("/:id", tweetController.destroy);
 
 module.exports = tweetRouter;

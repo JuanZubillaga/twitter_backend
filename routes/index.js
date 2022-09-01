@@ -4,6 +4,6 @@ const tweetRoutes = require("./tweetRoutes");
 
 module.exports = (app) => {
   app.use(publicRoutes);
-  app.use(userRoutes);
-  app.use(tweetRoutes);
+  app.use("/user", userRoutes);
+  app.use("/tweet", tweetRoutes);
 };
