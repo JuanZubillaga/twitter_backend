@@ -58,7 +58,6 @@ async function follow(req, res) {
   const notSelf = wantedUser.id !== loggedUser.id;
   if (notFollowing && notSelf) {
     await User.findByIdAndUpdate(loggedUser.id, { $push: { following: wantedUser.id } });
-    // await loggedUser.updateOne({ $push: { following: wantedUser.id } });
     await wantedUser.updateOne({ $push: { followers: loggedUser.id } });
   }
   res.json("following!");
@@ -66,9 +65,9 @@ async function follow(req, res) {
 
 async function unfollow(req, res) {
   const wantedUser = await User.findOne({ username: req.params.username });
-  const loggedUser = req.user;
+  const loggedUser = req.auth;
   const alreadyFollowing = loggedUser.following.includes(wantedUser.id);
-  const notSelf = !wantedUser.id.equals(loggedUser.id);
+  const notSelf = wantedUser.id !== loggedUser.id;
   if (alreadyFollowing && notSelf) {
     await loggedUser.updateOne({ $pull: { following: wantedUser.id } });
     await wantedUser.updateOne({ $pull: { followers: loggedUser.id } });
