@@ -4,7 +4,8 @@ const { formatDistanceToNow } = require("date-fns");
 const { es } = require("date-fns/locale");
 
 async function showHome(req, res) {
-  const loggedUser = req.user;
+  const loggedUser = req.auth;
+  // console.log(req.auth);
   const wantedTweets = await Tweet.find({ user: { $in: loggedUser.following } })
     .populate({ path: "user" })
     .sort({ createdAt: "desc" })
@@ -19,7 +20,9 @@ async function showHome(req, res) {
   const recommendedUsers = await User.find({
     $and: [{ _id: { $nin: loggedUser.following } }, { _id: { $ne: loggedUser._id } }],
   }).limit(20);
-  res.render("home", { loggedUser, wantedTweets, recommendedUsers, ownTweets });
+  // res.send("hmmm");
+  res.json({ loggedUser, wantedTweets, recommendedUsers, ownTweets });
+  // res.render("home", { loggedUser, wantedTweets, recommendedUsers, ownTweets });
 }
 
 async function showProfile(req, res) {

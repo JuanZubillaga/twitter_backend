@@ -1,6 +1,5 @@
-module.exports = (req, res, next) => {
-  if (!req.isAuthenticated()) {
-    return res.redirect("/login");
-  }
-  next();
+const checkJwt = require("express-jwt");
+
+module.exports = {
+  checkAuth: () => checkJwt({ secret: process.env.ACCESS_TOKEN_SECRET, algorithms: ["HS256"] }),
 };

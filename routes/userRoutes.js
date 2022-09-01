@@ -1,9 +1,9 @@
 const express = require("express");
+const { expressjwt } = require("express-jwt");
 const adminRouter = express.Router();
-const checkAuthenticated = require("../middlewares/checkAuthenticated");
 const userController = require("../controllers/userController");
 
-adminRouter.use(checkAuthenticated);
+adminRouter.use(expressjwt({ secret: process.env.ACCESS_TOKEN_SECRET, algorithms: ["HS256"] }));
 
 adminRouter.get("/home", userController.showHome);
 adminRouter.get("/profile/:username", userController.showProfile);

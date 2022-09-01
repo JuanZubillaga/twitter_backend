@@ -3,17 +3,6 @@ const { User } = require("../models");
 const formidable = require("formidable");
 const bcrypt = require("bcryptjs");
 
-async function welcome(req, res) {
-  if (req.isAuthenticated()) return res.redirect("home");
-  res.render("welcome");
-}
-
-// Display the specified resource.
-async function showLogin(req, res) {
-  const messages = await req.consumeFlash("info");
-  res.render("login", { messages });
-}
-
 // Show the form for creating a new resource
 async function create(req, res) {
   const messages = await req.consumeFlash("info");
@@ -56,15 +45,7 @@ async function store(req, res) {
   });
 }
 
-async function test(req, res) {
-  const tweets = { hola: "hola", mundo: "mundo" };
-  res.json(tweets);
-}
-
 module.exports = {
-  welcome,
-  showLogin,
   create,
   store,
-  test,
 };
