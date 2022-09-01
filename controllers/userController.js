@@ -5,12 +5,11 @@ const { es } = require("date-fns/locale");
 
 async function showHome(req, res) {
   const loggedUser = req.auth;
-  // console.log(req.auth);
   const wantedTweets = await Tweet.find({ user: { $in: loggedUser.following } })
     .populate({ path: "user", select: "username avatar" })
     .sort({ createdAt: "desc" })
     .limit(20);
-  const ownTweets = await Tweet.find({ user: loggedUser._id }).sort({ createdAt: "desc" }).limit(5);
+  const ownTweets = await Tweet.find({ user: loggedUser.id }).sort({ createdAt: "desc" }).limit(5);
   for (const tweet of wantedTweets) {
     tweet.formattedDate = formatDistanceToNow(tweet.createdAt, { locale: es });
   }
@@ -18,18 +17,17 @@ async function showHome(req, res) {
     tweet.formattedDate = formatDistanceToNow(tweet.createdAt, { locale: es });
   }
   const recommendedUsers = await User.find({
-    $and: [{ _id: { $nin: loggedUser.following } }, { _id: { $ne: loggedUser._id } }],
+    $and: [{ id: { $nin: loggedUser.following } }, { id: { $ne: loggedUser.id } }],
   })
     .select("username avatar")
     .limit(20);
 
   res.json({ loggedUser, wantedTweets, recommendedUsers, ownTweets });
-  // res.render("home", { loggedUser, wantedTweets, recommendedUsers, ownTweets });
 }
 
 async function showProfile(req, res) {
   const wantedUser = await User.findOne({ username: req.params.username });
-  const wantedTweets = await Tweet.find({ user: wantedUser._id })
+  const wantedTweets = await Tweet.find({ user: wantedUser.id })
     .sort({
       createdAt: "desc",
     })
@@ -37,13 +35,13 @@ async function showProfile(req, res) {
   for (const tweet of wantedTweets) {
     tweet.formattedDate = formatDistanceToNow(tweet.createdAt, { locale: es });
   }
-  const loggedUser = req.user;
-  const checkingOwnProfile = req.user.id === wantedUser.id;
-  const alreadyFollowing = loggedUser.following.includes(wantedUser._id);
+  const loggedUser = req.auth;
+  const checkingOwnProfile = loggedUser.id === wantedUser.id;
+  const alreadyFollowing = loggedUser.following.includes(wantedUser.id);
   const recommendedUsers = await User.find({
-    $and: [{ _id: { $nin: loggedUser.following } }, { _id: { $ne: loggedUser._id } }],
+    $and: [{ id: { $nin: loggedUser.following } }, { id: { $ne: loggedUser.id } }],
   }).limit(20);
-  res.render("profile", {
+  res.json({
     wantedUser,
     checkingOwnProfile,
     alreadyFollowing,
@@ -53,27 +51,26 @@ async function showProfile(req, res) {
   });
 }
 
-// Show the form for creating a new resource
 async function follow(req, res) {
   const wantedUser = await User.findOne({ username: req.params.username });
-  const loggedUser = req.user;
-  const notFollowing = !loggedUser.following.includes(wantedUser._id);
-  const notSelf = !wantedUser._id.equals(loggedUser._id);
+  const loggedUser = req.auth;
+  const notFollowing = !loggedUser.following.includes(wantedUser.id);
+  const notSelf = !wantedUser.id.equals(loggedUser.id);
   if (notFollowing && notSelf) {
-    await loggedUser.updateOne({ $push: { following: wantedUser._id } });
-    await wantedUser.updateOne({ $push: { followers: loggedUser._id } });
+    await loggedUser.updateOne({ $push: { following: wantedUser.id } });
+    await wantedUser.updateOne({ $push: { followers: loggedUser.id } });
   }
-  res.redirect("/home");
+  res.json("following!");
 }
 
 async function unfollow(req, res) {
   const wantedUser = await User.findOne({ username: req.params.username });
   const loggedUser = req.user;
-  const alreadyFollowing = loggedUser.following.includes(wantedUser._id);
-  const notSelf = !wantedUser._id.equals(loggedUser._id);
+  const alreadyFollowing = loggedUser.following.includes(wantedUser.id);
+  const notSelf = !wantedUser.id.equals(loggedUser.id);
   if (alreadyFollowing && notSelf) {
-    await loggedUser.updateOne({ $pull: { following: wantedUser._id } });
-    await wantedUser.updateOne({ $pull: { followers: loggedUser._id } });
+    await loggedUser.updateOne({ $pull: { following: wantedUser.id } });
+    await wantedUser.updateOne({ $pull: { followers: loggedUser.id } });
   }
   res.redirect("/home");
 }

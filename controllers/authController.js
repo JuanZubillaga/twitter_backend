@@ -12,6 +12,7 @@ async function authController(req, res) {
 
   const userData = {
     _id: user._id,
+    id: user.id,
     fullname: user.firstname + " " + user.lastname,
     username: user.username,
     email: user.email,
