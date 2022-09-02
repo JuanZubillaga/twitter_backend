@@ -1,6 +1,12 @@
 const { User, Tweet } = require("../models");
 const formidable = require("formidable");
 
+async function show(req, res) {
+  if (req.params.id === req.user.id) return res.json(req.user);
+  const wantedUser = await User.findById(req.params.id, "fullname username following followers");
+  res.json(wantedUser);
+}
+
 async function showHome(req, res) {
   const loggedUser = req.user;
   const wantedTweets = await Tweet.find({ user: { $in: loggedUser.following } })
@@ -119,6 +125,7 @@ async function destroy(req, res) {
 }
 
 module.exports = {
+  show,
   showHome,
   showProfile,
   follow,
