@@ -69,30 +69,18 @@ async function unfollow(req, res) {
   const alreadyFollowing = loggedUser.following.includes(wantedUser.id);
   const notSelf = wantedUser.id !== loggedUser.id;
   if (alreadyFollowing && notSelf) {
-    await loggedUser.updateOne({ $pull: { following: wantedUser.id } });
+    await User.findByIdAndUpdate(loggedUser.id, { $pull: { following: wantedUser.id } });
     await wantedUser.updateOne({ $pull: { followers: loggedUser.id } });
   }
-  res.redirect("/home");
-}
-
-async function editProfileForm(req, res) {
-  const loggedUser = req.user;
-  const notSelf = req.params.username !== loggedUser.username;
-
-  if (notSelf) {
-    return res.redirect("/");
-  }
-  const wantedUser = await User.findOne({ username: req.params.username });
-
-  res.render("editProfileForm", { wantedUser });
+  res.json("unfollowed!");
 }
 
 async function updateProfile(req, res) {
-  const loggedUser = req.user;
+  const loggedUser = req.auth;
   const notSelf = req.params.username !== loggedUser.username;
 
   if (notSelf) {
-    return res.redirect("/");
+    return res.json("unauthorized");
   }
 
   const form = formidable({
@@ -109,8 +97,8 @@ async function updateProfile(req, res) {
           avatar: files.avatar.newFilename,
         }
       : { firstname: fields.firstname, lastname: fields.lastname, bio: fields.bio };
-    await req.user.updateOne(update);
-    res.redirect(`/profile/${req.user.username}`);
+    await User.findByIdAndUpdate(req.auth.id, update);
+    res.json("updated");
   });
 }
 
@@ -119,7 +107,7 @@ async function showFollowing(req, res) {
     path: "following",
   });
   const following = wantedUser.following;
-  res.render("following_followers", { users: following, role: "following" });
+  res.json(following);
 }
 
 async function showFollowers(req, res) {
@@ -127,16 +115,16 @@ async function showFollowers(req, res) {
     path: "followers",
   });
   const followers = wantedUser.followers;
-  res.render("following_followers", { users: followers, role: "followers" });
+  res.json(followers);
 }
 
 async function destroy(req, res) {
-  if (req.user.id !== req.params.id) return res.redirect("back");
+  if (req.auth.id !== req.params.id) return res.json("unauthorized");
   await Tweet.deleteMany({ user: req.params.id });
   await User.updateMany({}, { $pull: { following: req.params.id } });
   await User.updateMany({}, { $pull: { followers: req.params.id } });
   await User.findByIdAndDelete(req.params.id);
-  res.redirect("/logout");
+  res.json("deleted!");
 }
 
 function logout(req, res) {
@@ -155,7 +143,6 @@ module.exports = {
   showProfile,
   follow,
   unfollow,
-  editProfileForm,
   updateProfile,
   showFollowing,
   showFollowers,

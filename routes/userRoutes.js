@@ -10,7 +10,7 @@ adminRouter.get("/:username", userController.showProfile);
 adminRouter.get("/logout", userController.logout);
 adminRouter.patch("/follow/:username", userController.follow);
 adminRouter.patch("/unfollow/:username", userController.unfollow);
-adminRouter.patch("/edit/:username", userController.updateProfile);
+adminRouter.patch("/:username", userController.updateProfile);
 adminRouter.get("/following/:username", userController.showFollowing);
 adminRouter.get("/followers/:username", userController.showFollowers);
 adminRouter.delete("/:id", userController.destroy);
