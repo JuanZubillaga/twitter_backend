@@ -9,7 +9,6 @@ adminRouter.use(makeLoggedUserAvailable);
 
 adminRouter.get("/home", userController.showHome);
 adminRouter.get("/:username", userController.showProfile);
-
 adminRouter.patch("/follow/:username", userController.follow);
 adminRouter.patch("/unfollow/:username", userController.unfollow);
 adminRouter.patch("/:username", userController.updateProfile);
