@@ -1,7 +1,7 @@
 const { User } = require("../models");
 
 async function makeLoggedUserAvailable(req, res, next) {
-  const loggedUser = await User.findById(req.auth.id);
+  const loggedUser = await User.findById(req.auth.id).select("-password");
   req.user = loggedUser;
   next();
 }

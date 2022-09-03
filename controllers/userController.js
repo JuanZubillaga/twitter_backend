@@ -3,8 +3,21 @@ const formidable = require("formidable");
 
 async function show(req, res) {
   if (req.params.id === req.user.id) return res.json(req.user);
-  const wantedUser = await User.findById(req.params.id, "fullname username following followers");
+  const wantedUser = await User.findById(
+    req.params.id,
+    "fullname username following followers avatar",
+  );
   res.json(wantedUser);
+}
+
+async function recommendedUsers(req, res) {
+  const loggedUser = req.user;
+  const recommendedUsers = await User.find({
+    $and: [{ id: { $nin: loggedUser.following } }, { id: { $ne: loggedUser.id } }],
+  })
+    .select("username avatar following followers")
+    .limit(20);
+  res.json(recommendedUsers);
 }
 
 async function showHome(req, res) {
@@ -25,7 +38,7 @@ async function showHome(req, res) {
 }
 
 async function showProfile(req, res) {
-  const wantedUser = await User.findOne({ username: req.params.username });
+  const wantedUser = await User.findOne({ username: req.params.username }).select("-password");
   const wantedTweets = await Tweet.find({ user: wantedUser.id })
     .sort({
       createdAt: "desc",
@@ -126,6 +139,7 @@ async function destroy(req, res) {
 
 module.exports = {
   show,
+  recommendedUsers,
   showHome,
   showProfile,
   follow,

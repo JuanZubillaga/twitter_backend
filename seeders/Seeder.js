@@ -2,7 +2,6 @@ const { faker } = require("@faker-js/faker");
 const _ = require("lodash");
 const bcrypt = require("bcryptjs");
 const { User, Tweet } = require("../models");
-const { toLower } = require("lodash");
 
 faker.locale = "es";
 

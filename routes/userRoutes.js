@@ -7,7 +7,8 @@ const makeLoggedUserAvailable = require("../middlewares/makeLoggedUserAvailable"
 userRouter.use(expressjwt({ secret: process.env.ACCESS_TOKEN_SECRET, algorithms: ["HS256"] }));
 userRouter.use(makeLoggedUserAvailable);
 
-userRouter.get("/:id", userController.show);
+// userRouter.get("/:id", userController.show);
+userRouter.get("/recommended-users", userController.recommendedUsers);
 
 userRouter.get("/home", userController.showHome);
 userRouter.get("/profile/:username", userController.showProfile);

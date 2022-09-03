@@ -3,7 +3,7 @@ const cors = require("cors");
 const express = require("express");
 const routes = require("./routes");
 const dbInitialSetup = require("./seeders/seeder");
-const APP_PORT = process.env.APP_PORT || 3000;
+const APP_PORT = process.env.APP_PORT || 8000;
 const app = express();
 
 app.use(cors());

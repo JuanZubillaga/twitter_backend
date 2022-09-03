@@ -13,15 +13,16 @@ module.exports = (mongoose) => {
       following: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
       followers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     },
-    {
-      virtuals: {
-        fullname: {
-          get() {
-            return this.firstname + " " + this.lastname;
-          },
-        },
-      },
-    },
+    { toJSON: { virtuals: true } },
+    // {
+    //   virtuals: {
+    //     fullname: {
+    //       get() {
+    //         return this.firstname + " " + this.lastname;
+    //       },
+    //     },
+    //   },
+    // },
   );
   userSchema.virtual("fullname").get(function () {
     return this.firstname + " " + this.lastname;
