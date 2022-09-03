@@ -7,6 +7,7 @@ module.exports = (mongoose) => {
       likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     },
     { timestamps: true },
+    { toJSON: { virtuals: true } },
   );
 
   const Tweet = mongoose.model("Tweet", tweetSchema);
