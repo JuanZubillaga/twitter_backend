@@ -12,6 +12,7 @@ userRouter.get("/recommended-users", userController.recommendedUsers);
 
 userRouter.get("/home", userController.showHome);
 userRouter.get("/profile/:username", userController.showProfile);
+userRouter.patch("/toggle-follow/:id", userController.toggleFollow);
 userRouter.patch("/follow/:username", userController.follow);
 userRouter.patch("/unfollow/:username", userController.unfollow);
 userRouter.patch("/:username", userController.updateProfile);

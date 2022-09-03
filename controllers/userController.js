@@ -29,7 +29,7 @@ async function showHome(req, res) {
   const ownTweets = await Tweet.find({ user: loggedUser.id }).sort({ createdAt: "desc" }).limit(5);
 
   const recommendedUsers = await User.find({
-    $and: [{ id: { $nin: loggedUser.following } }, { id: { $ne: loggedUser.id } }],
+    $and: [{ _id: { $nin: loggedUser.following } }, { _id: { $ne: loggedUser._id } }],
   })
     .select("username avatar")
     .limit(20);
@@ -59,6 +59,21 @@ async function showProfile(req, res) {
     wantedTweets,
     recommendedUsers,
   });
+}
+
+async function toggleFollow(req, res) {
+  const wantedUser = await User.findById(req.params.id);
+  const loggedUser = req.user;
+  if (wantedUser.id === loggedUser.id) return res.json("incorrect action, cannot follow self");
+  const alreadyFollowing = loggedUser.following.includes(wantedUser.id);
+  if (alreadyFollowing) {
+    await loggedUser.updateOne({ $pull: { following: wantedUser.id } });
+    await wantedUser.updateOne({ $pull: { followers: loggedUser.id } });
+  } else {
+    await loggedUser.updateOne({ $push: { following: wantedUser.id } });
+    await wantedUser.updateOne({ $push: { followers: loggedUser.id } });
+  }
+  res.json({ alreadyFollowing: !alreadyFollowing });
 }
 
 async function follow(req, res) {
@@ -142,6 +157,7 @@ module.exports = {
   recommendedUsers,
   showHome,
   showProfile,
+  toggleFollow,
   follow,
   unfollow,
   updateProfile,
