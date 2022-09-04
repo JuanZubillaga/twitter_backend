@@ -26,7 +26,10 @@ async function showHome(req, res) {
     .populate({ path: "user", select: "username avatar" })
     .sort({ createdAt: "desc" })
     .limit(20);
-  const ownTweets = await Tweet.find({ user: loggedUser.id }).sort({ createdAt: "desc" }).limit(5);
+  const ownTweets = await Tweet.find({ user: loggedUser.id })
+    .populate({ path: "user", select: "username avatar" })
+    .sort({ createdAt: "desc" })
+    .limit(5);
 
   const recommendedUsers = await User.find({
     $and: [{ _id: { $nin: loggedUser.following } }, { _id: { $ne: loggedUser._id } }],
@@ -38,7 +41,7 @@ async function showHome(req, res) {
 }
 
 async function showProfile(req, res) {
-  const wantedUser = await User.findOne({ username: req.params.username }).select("-password");
+  const wantedUser = await User.findById(req.params.id).select("-password");
   const wantedTweets = await Tweet.find({ user: wantedUser.id })
     .sort({
       createdAt: "desc",

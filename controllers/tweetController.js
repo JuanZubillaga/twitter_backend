@@ -3,7 +3,7 @@ const { User, Tweet } = require("../models");
 module.exports = {
   store: async (req, res) => {
     const newTweet = new Tweet({
-      content: req.body.tweet,
+      content: req.body.content,
       user: req.user.id,
     });
     try {
