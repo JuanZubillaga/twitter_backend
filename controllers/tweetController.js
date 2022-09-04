@@ -18,9 +18,12 @@ module.exports = {
   update: async (req, res) => {
     const wantedTweet = await Tweet.findById(req.params.id);
     const alreadyLiked = wantedTweet.likes.includes(req.user.id);
-    if (!alreadyLiked) await wantedTweet.updateOne({ $push: { likes: req.user.id } });
-    else await wantedTweet.updateOne({ $pull: { likes: req.user.id } });
-    res.json("like toggled");
+    if (alreadyLiked) {
+      await wantedTweet.updateOne({ $pull: { likes: req.user.id } });
+      return res.json({ liked: false });
+    }
+    await wantedTweet.updateOne({ $push: { likes: req.user.id } });
+    res.json({ liked: true });
   },
   destroy: async (req, res) => {
     const ownTweet = req.user.tweets.includes(req.params.id);

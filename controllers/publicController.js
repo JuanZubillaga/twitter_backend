@@ -3,12 +3,6 @@ const { User } = require("../models");
 const formidable = require("formidable");
 const bcrypt = require("bcryptjs");
 
-// Show the form for creating a new resource
-async function create(req, res) {
-  const messages = await req.consumeFlash("info");
-  res.render("register", { messages });
-}
-
 // Store a newly created resource in storage.
 async function store(req, res) {
   const form = formidable({
@@ -44,6 +38,5 @@ async function store(req, res) {
 }
 
 module.exports = {
-  create,
   store,
 };
