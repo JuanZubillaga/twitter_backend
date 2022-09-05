@@ -9,7 +9,7 @@ module.exports = async () => {
   const users = [];
   const tweets = [];
 
-  for (let i = 0; i < 20; i++) {
+  for (let i = 0; i < 40; i++) {
     const firstname = faker.name.firstName();
     const lastname = faker.name.lastName();
     const username = faker.internet.userName(firstname, lastname);
@@ -26,7 +26,7 @@ module.exports = async () => {
     users.push(user);
   }
 
-  for (let i = 0; i < 40; i++) {
+  for (let i = 0; i < 80; i++) {
     const randomUser = users[faker.datatype.number(users.length - 1)];
 
     const tweet = new Tweet({

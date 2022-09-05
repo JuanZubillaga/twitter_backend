@@ -23,7 +23,7 @@ async function store(req, res) {
         email: fields.email,
         password: await bcrypt.hash(fields.password, 8),
         bio: fields.bio,
-        avatar: avatarField,
+        avatar: "http://localhost:8000/img/" + avatarField,
       });
       try {
         await newUser.save();
