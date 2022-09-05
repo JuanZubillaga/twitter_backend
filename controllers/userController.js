@@ -43,6 +43,7 @@ async function showHome(req, res) {
 async function showProfile(req, res) {
   const wantedUser = await User.findById(req.params.id).select("-password");
   const wantedTweets = await Tweet.find({ user: wantedUser.id })
+    .populate({ path: "user", select: "username avatar" })
     .sort({
       createdAt: "desc",
     })
