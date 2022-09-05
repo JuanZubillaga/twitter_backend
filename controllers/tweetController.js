@@ -3,6 +3,7 @@ const { User, Tweet } = require("../models");
 module.exports = {
   latestTweet: async (req, res) => {
     const latestTweet = await Tweet.find({ user: req.user.id })
+      .populate({ path: "user", select: "username avatar" })
       .sort({ createdAt: "desc" })
       .limit(1);
     res.json({ latestTweet: latestTweet[0] });
