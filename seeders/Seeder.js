@@ -72,6 +72,6 @@ module.exports = async () => {
     }
   }
 
-  await User.insertMany(users);
+  await User.create(users);
   await Tweet.insertMany(tweets);
 };
