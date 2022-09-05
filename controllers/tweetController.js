@@ -1,6 +1,12 @@
 const { User, Tweet } = require("../models");
 
 module.exports = {
+  latestTweet: async (req, res) => {
+    const latestTweet = await Tweet.find({ user: req.user.id })
+      .sort({ createdAt: "desc" })
+      .limit(1);
+    res.json({ latestTweet: latestTweet[0] });
+  },
   store: async (req, res) => {
     const newTweet = new Tweet({
       content: req.body.content,
